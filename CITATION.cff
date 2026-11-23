@@ -1,0 +1,6 @@
+cff-version: 1.2.0
+message: "If you use ZKure in your work, please cite this repository."
+title: "ZKure: Privacy-Preserving Healthcare Claim Verification Prototype"
+type: software
+license: Apache-2.0
+abstract: "An experimental prototype exploring privacy-preserving healthcare claim verification using zero-knowledge proofs, Merkle membership and smart contracts."

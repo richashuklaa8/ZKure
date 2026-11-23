@@ -1,0 +1,25 @@
+{
+  "name": "mediproof-w3-01",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "contracts"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB -c cyan,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev -w backend",
+    "dev:web": "npm run dev -w frontend",
+    "build": "npm run build -w frontend",
+    "preview": "npm run preview -w frontend",
+    "start": "npm run start -w backend",
+    "check": "npm run check -w backend && npm run build -w frontend",
+    "contracts:compile": "npm run compile -w contracts",
+    "contracts:test": "npm run test -w contracts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

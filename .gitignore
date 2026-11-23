@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+coverage/
+artifacts/
+cache/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.keystore
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Circuit/proof artifacts (regenerate locally; review before committing any trusted setup material)
+*.wtns
+*.proof
+*.zkey
+*.r1cs
+*.sym
+*.ptau
