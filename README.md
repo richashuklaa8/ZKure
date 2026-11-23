@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img src="assets/zkure-banner.png" alt="ZKure - Zero-Knowledge Healthcare Claim Verification Network" width="100%">
+
 
 # ZKure
 
