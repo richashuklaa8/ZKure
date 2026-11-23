@@ -165,9 +165,8 @@ zkure/
 │   └── pull_request_template.md
 │
 ├── assets/
-│   ├── zkure-banner.png
 │   ├── zkure-tech-stack.png
-│   └── zkure-hackathon-poster.png
+│   └── zkure-pillars.png
 │
 ├── backend/
 │   ├── server.js
@@ -373,14 +372,6 @@ AI-assisted contributions must be reviewed, understood, tested and validated by 
 The team remains responsible for understanding the submitted implementation and disclosing AI assistance in accordance with the applicable hackathon rules.
 
 ---
-
-# Project Showcase
-
-<div align="center">
-
-<img src="assets/zkure-hackathon-poster.png" alt="ZKure hackathon project poster" width="100%">
-
-</div>
 
 *Project concept poster. Confirm event details and the official track label before publishing this graphic.*
 
