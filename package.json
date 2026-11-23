@@ -1,25 +1,40 @@
 {
-  "name": "mediproof-w3-01",
-  "version": "2.0.0",
+  "name": "zkure",
   "private": true,
+  "version": "2.0.0",
   "type": "module",
-  "workspaces": [
-    "frontend",
-    "backend",
-    "contracts"
-  ],
   "scripts": {
-    "dev": "concurrently -k -n API,WEB -c cyan,green \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:api": "npm run dev -w backend",
-    "dev:web": "npm run dev -w frontend",
-    "build": "npm run build -w frontend",
-    "preview": "npm run preview -w frontend",
-    "start": "npm run start -w backend",
-    "check": "npm run check -w backend && npm run build -w frontend",
-    "contracts:compile": "npm run compile -w contracts",
-    "contracts:test": "npm run test -w contracts"
+    "dev": "concurrently -k -p \"[{name}]\" -n \"SERVER,VITE\" -c \"cyan,magenta\" \"tsx server/index.ts\" \"vite\"",
+    "dev:frontend": "vite",
+    "dev:server": "tsx server/index.ts",
+    "server": "tsx server/index.ts",
+    "build": "tsc && vite build",
+    "test:security": "tsx --test tests/*.test.ts",
+    "preview": "vite preview",
+    "start": "tsx server/index.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "lucide-react": "^0.454.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^10.0.7",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "tsx": "^4.23.15",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }

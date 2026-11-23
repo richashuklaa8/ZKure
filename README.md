@@ -1,398 +1,198 @@
-
-<div align="center">
-
-
-
 # ZKure
 
-### Zero-Knowledge Healthcare Claim Verification Network
+**A privacy-focused healthcare records and consent-management prototype.**
 
-**Verify the claim. Protect the patient.**
+ZKure is a React + TypeScript frontend backed by an Express API and SQLite database. The supplied `arogyazk-main` source is the application baseline for this repository; the repository name and visible product branding are ZKure.
 
-Privacy-preserving healthcare claim verification using Zero-Knowledge Proofs, blockchain and patient-controlled permissions.
+> **Prototype status:** This repository demonstrates authenticated patient-record workflows, consent controls, encrypted record storage, and role-specific interfaces. It is not a production healthcare system. Real zero-knowledge proof generation/verification, blockchain anchoring, insurer settlement, and emergency guardian recovery are not implemented and intentionally fail closed. Demo fixtures are synthetic.
 
-[Architecture](docs/ARCHITECTURE.md) · [Implementation Status](docs/IMPLEMENTATION_STATUS.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
+## Problem
 
-</div>
+Healthcare workflows often require sharing sensitive patient information among patients, hospitals, and insurers. ZKure explores how authenticated access, scoped consent, and encrypted record storage can reduce unnecessary exposure of clinical notes.
 
----
+## Current capabilities in this source
 
-<div align="center">
+- Role-based application flows for Patient, Hospital, Insurer, and Admin.
+- Express API authentication with expiring HttpOnly session cookies.
+- Patient record creation and encrypted storage using AES-256-GCM.
+- Patient-controlled, time-limited hospital record permissions.
+- Audit-event and role-specific dashboard views.
+- Optional upload of encrypted record ciphertext to a Kubo-compatible IPFS API.
+- API health endpoint at `/api/health`.
+- Security tests covering authentication, role checks, record confidentiality, consent expiry, and fail-closed unavailable integrations.
 
-![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react&logoColor=black)
-![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=nodedotjs&logoColor=white)
-![Solidity](https://img.shields.io/badge/Solidity-Smart_Contracts-363636?logo=solidity)
-![Circom](https://img.shields.io/badge/Circom-ZK_Circuits-6C5CE7)
-![Status](https://img.shields.io/badge/Status-Prototype-orange)
+## Explicit integration limits
 
-</div>
+- No Circom circuit, witness generator, proving key, or verification key is included; real Groth16 proof generation is unavailable.
+- No deployed verifier contract, RPC configuration, signing key, or settlement/payment integration is included.
+- Blockchain explorer endpoints return no live chain data; no on-chain anchoring is performed.
+- Break-glass request/signature flows are disabled until real guardian-signature verification and secret reconstruction exist.
+- Record payloads are free text; FHIR R4/ABDM schema validation is not implemented.
+- SQLite audit logs are not tamper-evident, and rate limits are process-local.
+- Prototype fixture rows are synthetic and must not be treated as real patients, claims, proofs, transactions, or settlements.
 
-# 1. Project Overview
+## Technology stack
 
-Healthcare claim verification often involves sharing sensitive patient information between hospitals, insurers and other parties.
-
-Although insurers need sufficient information to evaluate claims, patients should not have to expose unnecessary medical information to prove eligibility.
-
-**ZKure** explores a privacy-preserving approach to healthcare claim verification using Zero-Knowledge Proofs (ZKPs), blockchain technology and patient permission mechanisms.
-
-The project aims to demonstrate how claim conditions can be verified while minimizing the disclosure of sensitive patient information.
-
-> **Current status:** ZKure is a hackathon prototype. Some components use simulated verification or mock implementations. It is not a production-ready healthcare or insurance system.
-
----
-
-# 2. The Problem
-
-Traditional healthcare claim workflows can create challenges around privacy, data access and verification.
-
-| Challenge | Description |
+| Layer | Technology |
 |---|---|
-| Sensitive data exposure | Medical information may be shared with multiple parties |
-| Limited patient control | Patients may have limited visibility into information access |
-| Verification complexity | Insurers need evidence that claims satisfy relevant conditions |
-| Trust and transparency | Multiple organizations need to coordinate claim decisions |
-| Data security | Centralized information systems can create security risks |
+| Frontend | React 18, TypeScript, Vite |
+| Styling/UI | Tailwind CSS, Lucide React |
+| API | Node.js, Express 5 |
+| Database | Node.js built-in `node:sqlite` (SQLite) |
+| Record encryption | Node.js crypto, AES-256-GCM, SHA-256 |
+| Optional ciphertext storage | Kubo-compatible IPFS HTTP API |
+| Tests | Node test runner via `tsx` |
 
-The challenge is to verify healthcare claims without unnecessarily exposing the patient's underlying medical information.
-
----
-
-# 3. Our Solution
-
-ZKure explores a system in which claim eligibility can be verified through privacy-preserving proofs and blockchain-based workflows.
-
-Instead of requiring every participant to access the complete medical record, the proposed approach separates sensitive information from the verification result.
-
-The solution is built around three core pillars:
-
-1. **Proof Without Disclosure:** Explore zero-knowledge proofs for verifying encoded claim conditions.
-2. **Patient Permission Vault:** Represent patient-controlled access permissions.
-3. **ClaimGuard Settlement:** Explore smart-contract-based claim verification and settlement workflows.
-
-The goal is to combine privacy, verifiability and transparent claim processing.
-
----
-
-# 4. Our Three Pillars
-
-<div align="center">
-
-<img src="assets/zkure-tech-stack.png" alt="ZKure three pillars and technology overview" width="100%">
-
-</div>
-
-### 01. Proof Without Disclosure + Merkle Verification
-
-Explore verification of hospital membership, policy validity and claim limits without revealing unnecessary confidential medical information.
-
-### 02. Patient Permission Vault
-
-Explore patient-controlled access to selected healthcare records and permission management.
-
-### 03. ClaimGuard Settlement
-
-Explore verifier-gated claim workflows, replay protection and transparent on-chain settlement.
-
-These are the intended feature pillars. Their inclusion in the design does not mean every feature is already fully implemented.
-
----
-
-# 5. System Architecture
-
-The proposed architecture separates claim information, proof generation and blockchain verification.
-
-```mermaid
-flowchart TD
-    A["Patient / Healthcare Provider"] --> B["Claim Information"]
-    B --> C["Backend Processing"]
-    C --> D["Zero-Knowledge Proof Generation"]
-    D --> E["Proof and Public Inputs"]
-    E --> F["Smart Contract Verification"]
-    F --> G["Claim Verification Result"]
-    G --> H["ClaimGuard Settlement"]
-
-    I["Patient Permission Mechanism"] --> C
-    I --> F
-```
-
-### Architecture Components
-
-| Component | Responsibility |
-|---|---|
-| Patient / Healthcare Provider | Represents participants in the claim workflow |
-| Claim Information | Information used to evaluate a claim |
-| Backend | Coordinates application-level processing |
-| ZK Circuit | Defines conditions intended to be proven |
-| Proof and Public Inputs | Represents information submitted for verification |
-| Smart Contract | Represents the on-chain verification and settlement layer |
-| Permission Mechanism | Represents patient access-control functionality |
-
-For more details, see [Architecture Documentation](docs/ARCHITECTURE.md).
-
-> This diagram represents the intended architecture, not proof of a complete end-to-end implementation.
-
----
-
-# 6. Technology Stack
-
-ZKure's repository includes the following technologies:
-
-| Technology | Purpose |
-|---|---|
-| React | Frontend user interface |
-| Vite | Frontend development tooling |
-| Node.js | Backend runtime |
-| Solidity | Smart-contract development |
-| Hardhat | Smart-contract development and testing |
-| Circom | Zero-knowledge circuit development |
-| snarkjs | Zero-knowledge proof tooling |
-| ethers.js | Ethereum application interaction |
-| EVM-compatible blockchain | Intended smart-contract execution environment |
-
-The exact deployment network and proof-verification configuration should be documented once finalized.
-
----
-
-# 7. Repository Structure
+## Architecture
 
 ```text
-zkure/
-│
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   ├── workflows/
-│   └── pull_request_template.md
-│
-├── assets/
-│   ├── zkure-tech-stack.png
-│   └── zkure-pillars.png
-│
-├── backend/
-│   ├── server.js
-│   ├── store.js
-│   └── package.json
-│
-├── circuits/
-│   ├── claim_eligibility.circom
-│   ├── README.md
-│   └── package.json
-│
-├── contracts/
-│   ├── src/
-│   │   ├── IMediProofVerifier.sol
-│   │   ├── MockMediProofVerifier.sol
-│   │   └── MediProofSettlement.sol
-│   ├── scripts/
-│   ├── test/
-│   └── hardhat.config.js
-│
+Browser
+  └── React + Vite-built static assets
+        │ same-origin /api requests
+        ▼
+      Express 5 (Node.js)
+        ├── session authentication and role checks
+        ├── record and consent endpoints
+        ├── encrypted payload handling
+        └── optional Kubo IPFS adapter
+              │
+              ▼
+          SQLite database
+```
+
+The Express server serves the compiled `dist/` frontend when it exists, so the frontend and API can run in one Render Web Service.
+
+## Project structure
+
+```text
+.
 ├── docs/
-│   ├── ARCHITECTURE.md
-│   ├── API_REFERENCE.md
-│   ├── DEMO_SCRIPT.md
-│   ├── IMPLEMENTATION_STATUS.md
-│   ├── PROJECT_PROVENANCE.md
-│   ├── REQUIREMENTS_TRACEABILITY.md
-│   └── THREAT_MODEL.md
-│
-├── frontend/
-│   ├── src/
-│   ├── package.json
-│   └── ...
-│
-├── .env.example
-├── .gitignore
-├── CITATION.cff
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── SECURITY.md
-└── package.json
+│   └── backend-architecture.md
+├── server/
+│   ├── db.ts
+│   ├── index.ts
+│   └── prototypeDataset.ts
+├── src/
+│   ├── components/
+│   ├── context/
+│   ├── layouts/
+│   ├── pages/
+│   ├── services/
+│   └── types/
+├── tests/
+│   └── security.test.ts
+├── index.html
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
----
+## Requirements
 
-# 8. Getting Started
+- Node.js **22.13.0 or newer** (uses the built-in `node:sqlite` module).
+- npm (included with Node.js).
 
-## Prerequisites
+## Local setup
 
-Install the following tools:
+1. Clone the repository and enter its directory.
+2. Install dependencies:
 
-- Node.js
-- npm
-- Git
-- Visual Studio Code or another code editor
+   ```bash
+   npm ci
+   ```
 
-Additional tools may be required for the Circom and Solidity components.
+3. Copy `.env.example` to `.env` and set:
+   - `BOOTSTRAP_ADMIN_EMAIL`
+   - `BOOTSTRAP_ADMIN_PASSWORD` (at least 12 characters)
+   - `RECORD_ENCRYPTION_KEY` (64 hexadecimal characters representing 32 bytes)
 
-## 1. Clone the repository
+   Generate a key with:
 
-```bash
-git clone https://github.com/richashuklaa8/zkure.git
-cd zkure
-```
+   ```bash
+   node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+   ```
 
-Replace `YOUR-USERNAME` with the actual GitHub username or organization.
+4. Start the development frontend and API together:
 
-## 2. Install frontend dependencies
+   ```bash
+   npm run dev
+   ```
 
-```bash
-cd frontend
-npm install
-```
+   Vite runs on `http://localhost:3000` and proxies `/api` to the API on `http://localhost:3001`.
 
-## 3. Install backend dependencies
+The initial Admin account is provisioned only if both bootstrap variables are set and no Admin already exists. Sign in as Admin and create linked Patient, Hospital, and Insurer accounts using existing seeded registry IDs/names. Never commit `.env` or real secrets.
 
-```bash
-cd ../backend
-npm install
-```
+## Commands
 
-## 4. Install smart-contract dependencies
-
-```bash
-cd ../contracts
-npm install
-```
-
-## 5. Configure environment variables
-
-Review the `.env.example` files and relevant documentation.
-
-Create local environment files only when required.
-
-**Never commit private keys, passwords, access tokens or actual `.env` files.**
-
-## 6. Explore available commands
-
-Inside each component directory, inspect its `package.json` scripts:
-
-```bash
-npm run
-```
-
-Use the commands documented for that component. Circuit dependencies and setup are described separately in `circuits/README.md`.
-
----
-
-# 9. Implementation Status
-
-ZKure is an evolving prototype. The following table distinguishes the current prototype from its intended capabilities.
-
-| Component | Current status |
+| Command | Purpose |
 |---|---|
-| React frontend | Prototype implementation |
-| Node.js backend | Prototype with simulated verification flows |
-| Solidity contracts | Implementation includes mock verifier usage |
-| Zero-Knowledge circuits | Source code present; further validation required |
-| Real proof verification | Complete end-to-end verification not yet demonstrated |
-| Patient permissions | Further enforcement and validation required |
-| Claim settlement | Prototype workflow; not production settlement |
+| `npm run dev` | Start Express API and Vite development server |
+| `npm run build` | Type-check frontend and build production assets into `dist/` |
+| `npm start` | Start Express; serves `dist/` and `/api` from one process |
+| `npm run test:security` | Run API/security tests |
+| `npm run preview` | Preview the Vite production build locally |
 
-For detailed information, see:
+## Environment variables
 
-[Implementation Status](docs/IMPLEMENTATION_STATUS.md)
+| Variable | Required | Purpose |
+|---|---:|---|
+| `PORT` | Render supplies it | HTTP port |
+| `HOST` | No | Defaults to `0.0.0.0` for Render |
+| `BOOTSTRAP_ADMIN_EMAIL` | For initial Admin | First Admin email |
+| `BOOTSTRAP_ADMIN_PASSWORD` | For initial Admin | First Admin password; minimum 12 characters |
+| `RECORD_ENCRYPTION_KEY` | For new encrypted records | 32-byte key as 64 hex characters; compatibility fallback key |
+| `RECORD_KEYRING_JSON` | No | JSON map of key versions to 64-character hex keys |
+| `RECORD_ACTIVE_KEY_VERSION` | No | Active version in the keyring |
+| `DATABASE_PATH` | No | SQLite database file path; defaults to `data/arogyazk.db` |
+| `CORS_ORIGINS` | No | Comma-separated allowed origins; default is local Vite origin |
+| `IPFS_API_URL` | No | Kubo-compatible API endpoint over HTTPS |
+| `IPFS_API_TOKEN` | No | Optional bearer token for IPFS API |
 
----
+For durable deployments, retain the full database and encryption keyring together in access-controlled backups. Loss of either can make encrypted records unrecoverable.
 
-# 10. Security and Limitations
+## Deploy to Render
 
-Healthcare information is sensitive. Security and privacy must be treated as core engineering requirements.
+Create or update a **Node.js Web Service** connected to this repository:
 
-### Current limitations
+| Render setting | Value |
+|---|---|
+| Root Directory | Repository root (leave blank) |
+| Build Command | `npm ci && npm run build` |
+| Start Command | `npm start` |
+| Health Check Path | `/api/health` |
+| Node version | `>=22.13.0` |
 
-- Simulated backend verification must not be confused with cryptographic proof verification.
-- Mock verifier usage does not establish real on-chain proof verification.
-- Prototype permission mechanisms must not be treated as production-grade authorization.
-- Circuit logic requires further review, testing and security validation.
-- Randomly generated identifiers must not be treated as secure cryptographic nullifiers.
-- Smart contracts require independent security review before production use.
+Set `BOOTSTRAP_ADMIN_EMAIL`, `BOOTSTRAP_ADMIN_PASSWORD`, and `RECORD_ENCRYPTION_KEY` as Render environment variables. Render supplies `PORT`; the server binds to `0.0.0.0`.
 
-### Security Principles
+The app serves both the frontend and API from the same process; do not create a separate static-site service for this single-service setup.
 
-- Never commit private keys or credentials.
-- Never use real patient medical records in demonstrations.
-- Hashing is not encryption.
-- A zero-knowledge proof does not independently establish that an underlying medical record is truthful.
-- Revoking access cannot erase information that another party has already copied.
-- Experimental contracts should not be used with real funds or production healthcare data.
+**Render Free limitation:** the SQLite file is stored on an ephemeral filesystem and can be lost on restart, spin-down, or redeploy. Free web services cannot attach persistent disks. This is suitable only for a disposable hackathon/demo deployment, not durable patient data. For persistence, use a paid service with a disk mounted at `/var/data` and set `DATABASE_PATH=/var/data/zkure.db`, or migrate to a managed database. Do not use real patient information in this prototype.
 
-Read the [Security Policy](SECURITY.md) and [Threat Model](docs/THREAT_MODEL.md) for further information.
+Render free web services can spin down after inactivity, so the first request after idle may take time to respond.
 
----
+## Tests and verification
 
-# 11. Development Roadmap
+Run:
 
-The following items are development goals, not claims of completed functionality.
+```bash
+npm ci
+npm run build
+npm run test:security
+```
 
-- [ ] Validate and strengthen zero-knowledge circuit constraints.
-- [ ] Implement secure, domain-separated nullifiers.
-- [ ] Introduce appropriate patient and healthcare-provider authorization.
-- [ ] Integrate real proof generation and verification.
-- [ ] Replace mock verifier usage with validated verification.
-- [ ] Strengthen permission enforcement and revocation.
-- [ ] Improve smart-contract access controls.
-- [ ] Add comprehensive automated tests.
-- [ ] Validate the complete claim verification workflow.
-- [ ] Evaluate deployment on the required public test network.
-- [ ] Conduct security and privacy reviews.
+A successful build and test run should be recorded from the deployment environment before claiming the release is verified. The supplied archive has not yet passed these commands in this inspection environment because its dependency installation did not complete; see the deployment checklist in the accompanying handoff.
 
----
+## Screenshots
 
-# 12. Contributing
+No screenshots were included in the supplied source archive. Add genuine application screenshots here after running the project; do not use mock or illustrative images as product screenshots.
 
-Contributions, suggestions and technical discussions are welcome.
+## Credits and acknowledgements
 
-Before contributing:
-
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
-2. Review the existing implementation.
-3. Open an issue to discuss substantial changes.
-4. Submit changes through a pull request.
-5. Include relevant tests and documentation.
-
-Please follow the project's [Code of Conduct](CODE_OF_CONDUCT.md).
-
----
-
-# 13. AI Disclosure and Acknowledgements
-
-AI-assisted development tools may be used during the development process for:
-
-- Research and brainstorming
-- Documentation preparation
-- Code assistance
-- Debugging support
-- Development guidance
-
-AI-assisted contributions must be reviewed, understood, tested and validated by the project contributors.
-
-The team remains responsible for understanding the submitted implementation and disclosing AI assistance in accordance with the applicable hackathon rules.
-
----
-
-*Project concept poster. Confirm event details and the official track label before publishing this graphic.*
-
----
+- The application source in this repository is based on the supplied `arogyazk-main` project archive.
+- React, Vite, Express, Tailwind CSS, Lucide React, and the Node.js project ecosystem.
+- Kubo-compatible IPFS API support is optional and must be configured independently.
 
 ## License
 
-This repository includes a `LICENSE` file. Refer to that file for the applicable licence terms.
-
-Copyright attribution and licence arrangements should be confirmed by the relevant contributors before public distribution.
-
----
-
-<div align="center">
-
-# ZKure
-
-### Verify the claim. Protect the patient.
-
-**Privacy. Security. Decentralized Trust.**
-
-Building toward a more privacy-conscious approach to healthcare claim verification.
-
-</div>
+See the repository's existing `LICENSE` file. Preserve its terms when replacing the previous repository contents.
