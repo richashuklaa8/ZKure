@@ -1,144 +1,407 @@
+
+<div align="center">
+
+<img src="assets/zkure-banner.png" alt="ZKure - Zero-Knowledge Healthcare Claim Verification Network" width="100%">
+
 # ZKure
+
+### Zero-Knowledge Healthcare Claim Verification Network
 
 **Verify the claim. Protect the patient.**
 
-ZKure is a privacy-focused healthcare claim verification prototype exploring how zero-knowledge proofs, Merkle membership and smart contracts can reduce unnecessary disclosure during insurance claim review.
+Privacy-preserving healthcare claim verification using Zero-Knowledge Proofs, blockchain and patient-controlled permissions.
 
-> **Prototype status:** This repository contains an early prototype. Some verification, permission and settlement paths are simulated or incomplete. Do not use it with real patient data, real insurance claims, production funds or production infrastructure.
+[Architecture](docs/ARCHITECTURE.md) · [Implementation Status](docs/IMPLEMENTATION_STATUS.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md)
 
-![Project](https://img.shields.io/badge/Project-ZKure-526DFF)
-![Domain](https://img.shields.io/badge/Domain-Web3-7C3AED)
+</div>
+
+---
+
+<div align="center">
+
+![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=nodedotjs&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-Smart_Contracts-363636?logo=solidity)
+![Circom](https://img.shields.io/badge/Circom-ZK_Circuits-6C5CE7)
 ![Status](https://img.shields.io/badge/Status-Prototype-orange)
-![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
-## The problem
+</div>
 
-Healthcare claim review can require sharing more medical information than a reviewer needs to decide whether a claim satisfies policy conditions. This creates avoidable exposure of sensitive information.
+# 1. Project Overview
 
-ZKure explores a narrower verification boundary: prove selected eligibility conditions while minimizing disclosure of private medical details.
+Healthcare claim verification often involves sharing sensitive patient information between hospitals, insurers and other parties.
 
-## The three product pillars
+Although insurers need sufficient information to evaluate claims, patients should not have to expose unnecessary medical information to prove eligibility.
 
-1. **Proof Without Disclosure + Merkle Verification** — a proposed proof flow for approved-hospital membership and claim eligibility conditions.
-2. **Patient Permission Vault** — a proposed encrypted-record access workflow with patient-controlled grants, revocation and audit events.
-3. **ClaimGuard Settlement** — a proposed smart-contract settlement flow with proof verification and replay protection.
+**ZKure** explores a privacy-preserving approach to healthcare claim verification using Zero-Knowledge Proofs (ZKPs), blockchain technology and patient permission mechanisms.
 
-## Architecture at a glance
+The project aims to demonstrate how claim conditions can be verified while minimizing the disclosure of sensitive patient information.
+
+> **Current status:** ZKure is a hackathon prototype. Some components use simulated verification or mock implementations. It is not a production-ready healthcare or insurance system.
+
+---
+
+# 2. The Problem
+
+Traditional healthcare claim workflows can create challenges around privacy, data access and verification.
+
+| Challenge | Description |
+|---|---|
+| Sensitive data exposure | Medical information may be shared with multiple parties |
+| Limited patient control | Patients may have limited visibility into information access |
+| Verification complexity | Insurers need evidence that claims satisfy relevant conditions |
+| Trust and transparency | Multiple organizations need to coordinate claim decisions |
+| Data security | Centralized information systems can create security risks |
+
+The challenge is to verify healthcare claims without unnecessarily exposing the patient's underlying medical information.
+
+---
+
+# 3. Our Solution
+
+ZKure explores a system in which claim eligibility can be verified through privacy-preserving proofs and blockchain-based workflows.
+
+Instead of requiring every participant to access the complete medical record, the proposed approach separates sensitive information from the verification result.
+
+The solution is built around three core pillars:
+
+1. **Proof Without Disclosure:** Explore zero-knowledge proofs for verifying encoded claim conditions.
+2. **Patient Permission Vault:** Represent patient-controlled access permissions.
+3. **ClaimGuard Settlement:** Explore smart-contract-based claim verification and settlement workflows.
+
+The goal is to combine privacy, verifiability and transparent claim processing.
+
+---
+
+# 4. Our Three Pillars
+
+<div align="center">
+
+<img src="assets/zkure-tech-stack.png" alt="ZKure three pillars and technology overview" width="100%">
+
+</div>
+
+### 01. Proof Without Disclosure + Merkle Verification
+
+Explore verification of hospital membership, policy validity and claim limits without revealing unnecessary confidential medical information.
+
+### 02. Patient Permission Vault
+
+Explore patient-controlled access to selected healthcare records and permission management.
+
+### 03. ClaimGuard Settlement
+
+Explore verifier-gated claim workflows, replay protection and transparent on-chain settlement.
+
+These are the intended feature pillars. Their inclusion in the design does not mean every feature is already fully implemented.
+
+---
+
+# 5. System Architecture
+
+The proposed architecture separates claim information, proof generation and blockchain verification.
 
 ```mermaid
-flowchart LR
-  P[Patient] -->|permission / authorization| V[Permission Vault]
-  H[Hospital] -->|claim + private witness| Z[ZK proof workflow]
-  R[Hospital registry] -->|Merkle root| Z
-  Z -->|proof + public signals| I[Insurer verifier]
-  I -->|valid claim| C[ClaimGuard contract]
-  C -->|settlement event| A[Audit trail]
+flowchart TD
+    A["Patient / Healthcare Provider"] --> B["Claim Information"]
+    B --> C["Backend Processing"]
+    C --> D["Zero-Knowledge Proof Generation"]
+    D --> E["Proof and Public Inputs"]
+    E --> F["Smart Contract Verification"]
+    F --> G["Claim Verification Result"]
+    G --> H["ClaimGuard Settlement"]
+
+    I["Patient Permission Mechanism"] --> C
+    I --> F
 ```
 
-The diagram describes the intended architecture, not a claim that every integration is currently operational. See [implementation status](docs/IMPLEMENTATION_STATUS.md).
+### Architecture Components
 
-## Repository structure
+| Component | Responsibility |
+|---|---|
+| Patient / Healthcare Provider | Represents participants in the claim workflow |
+| Claim Information | Information used to evaluate a claim |
+| Backend | Coordinates application-level processing |
+| ZK Circuit | Defines conditions intended to be proven |
+| Proof and Public Inputs | Represents information submitted for verification |
+| Smart Contract | Represents the on-chain verification and settlement layer |
+| Permission Mechanism | Represents patient access-control functionality |
+
+For more details, see [Architecture Documentation](docs/ARCHITECTURE.md).
+
+> This diagram represents the intended architecture, not proof of a complete end-to-end implementation.
+
+---
+
+# 6. Technology Stack
+
+ZKure's repository includes the following technologies:
+
+| Technology | Purpose |
+|---|---|
+| React | Frontend user interface |
+| Vite | Frontend development tooling |
+| Node.js | Backend runtime |
+| Solidity | Smart-contract development |
+| Hardhat | Smart-contract development and testing |
+| Circom | Zero-knowledge circuit development |
+| snarkjs | Zero-knowledge proof tooling |
+| ethers.js | Ethereum application interaction |
+| EVM-compatible blockchain | Intended smart-contract execution environment |
+
+The exact deployment network and proof-verification configuration should be documented once finalized.
+
+---
+
+# 7. Repository Structure
 
 ```text
 zkure/
-├── backend/       # API prototype and in-memory/demo data handling
-├── frontend/      # React + Vite interface
-├── contracts/     # Solidity settlement prototype and tests
-├── circuits/      # Circom circuit prototype
-├── docs/          # Architecture, threat model, status and requirements
-├── .github/       # Issue templates and CI workflow
-└── README.md
+│
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── workflows/
+│   └── pull_request_template.md
+│
+├── assets/
+│   ├── zkure-banner.png
+│   ├── zkure-tech-stack.png
+│   └── zkure-hackathon-poster.png
+│
+├── backend/
+│   ├── server.js
+│   ├── store.js
+│   └── package.json
+│
+├── circuits/
+│   ├── claim_eligibility.circom
+│   ├── README.md
+│   └── package.json
+│
+├── contracts/
+│   ├── src/
+│   │   ├── IMediProofVerifier.sol
+│   │   ├── MockMediProofVerifier.sol
+│   │   └── MediProofSettlement.sol
+│   ├── scripts/
+│   ├── test/
+│   └── hardhat.config.js
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── API_REFERENCE.md
+│   ├── DEMO_SCRIPT.md
+│   ├── IMPLEMENTATION_STATUS.md
+│   ├── PROJECT_PROVENANCE.md
+│   ├── REQUIREMENTS_TRACEABILITY.md
+│   └── THREAT_MODEL.md
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── ...
+│
+├── .env.example
+├── .gitignore
+├── CITATION.cff
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── SECURITY.md
+└── package.json
 ```
 
-## Technology
+---
 
-The current source tree includes:
+# 8. Getting Started
 
-- React, Vite and JavaScript for the frontend
-- Node.js for the backend prototype
-- Solidity and Hardhat for the contract prototype
-- Circom for the circuit source
+## Prerequisites
 
-The presence of a technology in the repository does not mean its complete production integration has been verified. Check each component's README and implementation-status document.
+Install the following tools:
 
-## Getting started
+- Node.js
+- npm
+- Git
+- Visual Studio Code or another code editor
 
-Requirements: Node.js version compatible with `.nvmrc` and npm.
+Additional tools may be required for the Circom and Solidity components.
+
+## 1. Clone the repository
 
 ```bash
-# Frontend
+git clone https://github.com/richashuklaa8/zkure.git
+cd zkure
+```
+
+Replace `YOUR-USERNAME` with the actual GitHub username or organization.
+
+## 2. Install frontend dependencies
+
+```bash
 cd frontend
 npm install
-npm run dev
 ```
 
-```bash
-# Backend (in a separate terminal)
-cd backend
-npm install
-cp .env.example .env
-npm run dev
-```
+## 3. Install backend dependencies
 
 ```bash
-# Contracts
-cd contracts
-npm install
-npx hardhat test
-```
-
-```bash
-# Circuit package
-cd circuits
+cd ../backend
 npm install
 ```
 
-See the component READMEs before attempting proof generation or deployment. Commands and dependencies may need adjustment for your local environment.
+## 4. Install smart-contract dependencies
 
-## Documentation
+```bash
+cd ../contracts
+npm install
+```
 
-- [Architecture](docs/ARCHITECTURE.md)
-- [Threat model](docs/THREAT_MODEL.md)
-- [Implementation status](docs/IMPLEMENTATION_STATUS.md)
-- [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md)
-- [API reference](docs/API_REFERENCE.md)
-- [Demo script](docs/DEMO_SCRIPT.md)
-- [Security policy](SECURITY.md)
-- [Contributing](CONTRIBUTING.md)
+## 5. Configure environment variables
 
-## Security and privacy limitations
+Review the `.env.example` files and relevant documentation.
 
-- Use synthetic/demo data only. Never upload real patient records.
-- The current contract tests use a mock verifier; they do not establish real ZK proof verification.
-- Backend verification and settlement behavior may be simulated.
-- Permission checks and revocation must be independently audited before any real use.
-- A proof can establish encoded statements; it does not establish that a medical record is clinically true or that treatment was necessary.
-- Revocation can block future access through the application, but cannot erase copies already downloaded by an authorized recipient.
-- Do not deploy with real funds or production keys.
+Create local environment files only when required.
 
-Please report security issues privately as described in [SECURITY.md](SECURITY.md).
+**Never commit private keys, passwords, access tokens or actual `.env` files.**
 
-## Hackathon context
+## 6. Explore available commands
 
-Prepared as a prototype for Hack-a-Sol 5.0. The official rulebook identifies **Web3 as Track 01**. The exact problem statement identifier and chain requirements must be checked against the team's registered portal entry before final submission. Do not rely on inconsistent track labels in older draft materials.
+Inside each component directory, inspect its `package.json` scripts:
 
-## AI assistance and credits
+```bash
+npm run
+```
 
-AI coding assistance was used during project development. Team members are responsible for reviewing, understanding, testing and disclosing AI-assisted contributions in accordance with event rules.
+Use the commands documented for that component. Circuit dependencies and setup are described separately in `circuits/README.md`.
 
-Third-party libraries and frameworks retain their respective licenses. See package manifests and dependency notices.
+---
 
-## Roadmap
+# 9. Implementation Status
 
-- [ ] Replace simulated verification with a real, tested proof-verification path
-- [ ] Finalize patient authorization and claim-context binding
-- [ ] Complete replay-resistant nullifier design and tests
-- [ ] Integrate a real verifier into the settlement contract
-- [ ] Enforce permission grants, expiry and revocation end to end
-- [ ] Add integration and end-to-end tests
-- [ ] Deploy to the problem-statement-approved public testnet, if required
-- [ ] Publish verified contract and demo links
+ZKure is an evolving prototype. The following table distinguishes the current prototype from its intended capabilities.
+
+| Component | Current status |
+|---|---|
+| React frontend | Prototype implementation |
+| Node.js backend | Prototype with simulated verification flows |
+| Solidity contracts | Implementation includes mock verifier usage |
+| Zero-Knowledge circuits | Source code present; further validation required |
+| Real proof verification | Complete end-to-end verification not yet demonstrated |
+| Patient permissions | Further enforcement and validation required |
+| Claim settlement | Prototype workflow; not production settlement |
+
+For detailed information, see:
+
+[Implementation Status](docs/IMPLEMENTATION_STATUS.md)
+
+---
+
+# 10. Security and Limitations
+
+Healthcare information is sensitive. Security and privacy must be treated as core engineering requirements.
+
+### Current limitations
+
+- Simulated backend verification must not be confused with cryptographic proof verification.
+- Mock verifier usage does not establish real on-chain proof verification.
+- Prototype permission mechanisms must not be treated as production-grade authorization.
+- Circuit logic requires further review, testing and security validation.
+- Randomly generated identifiers must not be treated as secure cryptographic nullifiers.
+- Smart contracts require independent security review before production use.
+
+### Security Principles
+
+- Never commit private keys or credentials.
+- Never use real patient medical records in demonstrations.
+- Hashing is not encryption.
+- A zero-knowledge proof does not independently establish that an underlying medical record is truthful.
+- Revoking access cannot erase information that another party has already copied.
+- Experimental contracts should not be used with real funds or production healthcare data.
+
+Read the [Security Policy](SECURITY.md) and [Threat Model](docs/THREAT_MODEL.md) for further information.
+
+---
+
+# 11. Development Roadmap
+
+The following items are development goals, not claims of completed functionality.
+
+- [ ] Validate and strengthen zero-knowledge circuit constraints.
+- [ ] Implement secure, domain-separated nullifiers.
+- [ ] Introduce appropriate patient and healthcare-provider authorization.
+- [ ] Integrate real proof generation and verification.
+- [ ] Replace mock verifier usage with validated verification.
+- [ ] Strengthen permission enforcement and revocation.
+- [ ] Improve smart-contract access controls.
+- [ ] Add comprehensive automated tests.
+- [ ] Validate the complete claim verification workflow.
+- [ ] Evaluate deployment on the required public test network.
+- [ ] Conduct security and privacy reviews.
+
+---
+
+# 12. Contributing
+
+Contributions, suggestions and technical discussions are welcome.
+
+Before contributing:
+
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md).
+2. Review the existing implementation.
+3. Open an issue to discuss substantial changes.
+4. Submit changes through a pull request.
+5. Include relevant tests and documentation.
+
+Please follow the project's [Code of Conduct](CODE_OF_CONDUCT.md).
+
+---
+
+# 13. AI Disclosure and Acknowledgements
+
+AI-assisted development tools may be used during the development process for:
+
+- Research and brainstorming
+- Documentation preparation
+- Code assistance
+- Debugging support
+- Development guidance
+
+AI-assisted contributions must be reviewed, understood, tested and validated by the project contributors.
+
+The team remains responsible for understanding the submitted implementation and disclosing AI assistance in accordance with the applicable hackathon rules.
+
+---
+
+# Project Showcase
+
+<div align="center">
+
+<img src="assets/zkure-hackathon-poster.png" alt="ZKure hackathon project poster" width="100%">
+
+</div>
+
+*Project concept poster. Confirm event details and the official track label before publishing this graphic.*
+
+---
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE). Confirm that all contributors have authorized this licensing choice before publishing.
+This repository includes a `LICENSE` file. Refer to that file for the applicable licence terms.
+
+Copyright attribution and licence arrangements should be confirmed by the relevant contributors before public distribution.
+
+---
+
+<div align="center">
+
+# ZKure
+
+### Verify the claim. Protect the patient.
+
+**Privacy. Security. Decentralized Trust.**
+
+Building toward a more privacy-conscious approach to healthcare claim verification.
+
+</div>
