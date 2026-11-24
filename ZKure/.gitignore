@@ -1,0 +1,33 @@
+node_modules/
+dist/
+coverage/
+data/
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+npm-debug.log*
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+.private/
+
+# Local databases and runtime output
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+*.log
+coverage/
+dist/
+node_modules/
